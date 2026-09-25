@@ -1,4 +1,5 @@
 const r = require("raylib");
+const geometry = require("./geometry");
 
 const windowWidth = 900;
 const windowHeight = 600;
@@ -14,39 +15,6 @@ const circle2X = 500;
 const circle2Y = 300;
 const circle2Radius = 400;
 
-function sqr(number) {
-    return number ** 2;
-}
-
-function sqrt(number) {
-    return number ** 0.5;
-}
-
-function distanceBetweenTwoPoints(sourceX, sourceY, targetX, targetY) {
-    const horizontalDistance = sourceX - targetX;
-    const verticalDistance = sourceY - targetY;
-    const squaredDistance = sqr(horizontalDistance) + sqr(verticalDistance);
-    return sqrt(squaredDistance);
-}
-
-function checkIntersection(
-    sourceX,
-    sourceY,
-    sourceRadius,
-    targetX,
-    targetY,
-    targetRadius,
-) {
-    const distance = distanceBetweenTwoPoints(
-        sourceX,
-        sourceY,
-        targetX,
-        targetY,
-    );
-    const sumOfRadius = sourceRadius + targetRadius;
-    return distance <= sumOfRadius ? true : false;
-}
-
 function choseColor(
     sourceX,
     sourceY,
@@ -55,7 +23,7 @@ function choseColor(
     targetY,
     targetRadius,
 ) {
-    return checkIntersection(
+    return geometry.checkIntersection(
         sourceX,
         sourceY,
         sourceRadius,
@@ -65,6 +33,10 @@ function choseColor(
     )
         ? r.RED
         : r.BLACK;
+}
+
+function running() {
+    return !r.WindowShouldClose();
 }
 
 function setup() {
@@ -95,17 +67,14 @@ function draw() {
     r.EndDrawing();
 }
 
-function loop() {
-    while (!r.WindowShouldClose()) {
-        update();
-        draw();
-    }
-}
-
-function main() {
-    setup();
-    loop();
+function teardown() {
     r.CloseWindow();
 }
 
-main();
+module.exports = {
+    running,
+    setup,
+    update,
+    draw,
+    teardown,
+};

@@ -1,7 +1,6 @@
 const r = require("raylib");
+const geometry = require("./geometry");
 
-const windowX = 0;
-const windowY = 0;
 const windowWidth = 800;
 const windowHeight = 400;
 const windowTitle = "Scale and Center";
@@ -10,19 +9,17 @@ const windowColor = r.BLACK;
 
 const outerRectWidth = 400;
 const outerRectHeight = 200;
-const outerX = centerChild(windowX, windowWidth, outerRectWidth);
-const outerY = centerChild(windowY, windowHeight, outerRectHeight);
+const outerX = geometry.calcOffset(windowWidth, outerRectWidth);
+const outerY = geometry.calcOffset(windowHeight, outerRectHeight);
 const outerRectColor = r.WHITE;
 const scaleFactor = 0.8;
 
-// Functions
 function innerRectLength(outerLength, scaleFactor) {
     return scaleFactor * outerLength;
 }
 
-function centerChild(parentPosition, parentLength, childLength) {
-    return parentPosition + (parentLength - childLength) / 2;
-    // return parentLength / 2 - childLength / 2;
+function running() {
+    return !r.WindowShouldClose();
 }
 
 function setup() {
@@ -31,7 +28,7 @@ function setup() {
 }
 
 function update() {
-    //update
+    // update
 }
 
 function draw() {
@@ -44,16 +41,8 @@ function draw() {
         scaleFactor,
     );
     const innerRectColor = r.RED;
-    const innerX = centerChild(
-        outerX,
-        outerRectWidth,
-        innerRectWidth,
-    );
-    const innerY = centerChild(
-        outerY,
-        outerRectHeight,
-        innerRectHeight,
-    );
+    const innerX = outerX + geometry.calcOffset(outerRectWidth, innerRectWidth);
+    const innerY = outerY + geometry.calcOffset(outerRectHeight, innerRectHeight);
 
     r.BeginDrawing();
 
@@ -80,17 +69,14 @@ function draw() {
     r.EndDrawing();
 }
 
-function loop() {
-    while (!r.WindowShouldClose()) {
-        update();
-        draw();
-    }
-}
-
-function main() {
-    setup();
-    loop();
+function teardown() {
     r.CloseWindow();
 }
 
-main();
+module.exports = {
+    running,
+    setup,
+    update,
+    draw,
+    teardown,
+};
